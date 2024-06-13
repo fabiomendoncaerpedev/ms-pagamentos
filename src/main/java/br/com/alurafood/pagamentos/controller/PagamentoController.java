@@ -1,12 +1,11 @@
 package br.com.alurafood.pagamentos.controller;
 
+import br.com.alurafood.pagamentos.dto.PagamentoDetalhadoDto;
 import br.com.alurafood.pagamentos.dto.PagamentoDto;
-import br.com.alurafood.pagamentos.model.Pagamento;
 import br.com.alurafood.pagamentos.service.PagamentoService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,8 +28,9 @@ public class PagamentoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PagamentoDto> detalhar(@PathVariable @NotNull Long id) {
-        PagamentoDto dto = service.obterPorId(id);
+    @CircuitBreaker(name = "detalhamentoDoPagamento", fallbackMethod = "obterPagamentoSemPedidos")
+    public ResponseEntity<PagamentoDetalhadoDto> detalhar(@PathVariable @NotNull Long id) {
+        PagamentoDetalhadoDto dto = service.obterDetalhadoPorId(id);
 
         return ResponseEntity.ok(dto);
     }
@@ -65,5 +65,11 @@ public class PagamentoController {
 
     public void pagamentoAutorizadoComIntegracaoPendente(Long id, Exception ex) {
         service.alteraStatus(id);
+    }
+
+    public ResponseEntity<PagamentoDto> obterPagamentoSemPedidos(Long id, Exception ex) {
+        PagamentoDto dto = service.obterPorId(id);
+
+        return ResponseEntity.ok(dto);
     }
 }

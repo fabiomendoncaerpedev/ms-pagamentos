@@ -1,5 +1,7 @@
 package br.com.alurafood.pagamentos.service;
 
+import br.com.alurafood.pagamentos.dto.ItemDoPedidoDto;
+import br.com.alurafood.pagamentos.dto.PagamentoDetalhadoDto;
 import br.com.alurafood.pagamentos.dto.PagamentoDto;
 import br.com.alurafood.pagamentos.http.PedidoCliente;
 import br.com.alurafood.pagamentos.model.Pagamento;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
