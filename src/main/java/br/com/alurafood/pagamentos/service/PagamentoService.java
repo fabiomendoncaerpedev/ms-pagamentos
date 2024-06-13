@@ -27,6 +27,18 @@ public class PagamentoService {
         return repository.findAll(paginacao).map(p -> modelmapper.map(p, PagamentoDto.class));
     }
 
+    public PagamentoDetalhadoDto obterDetalhadoPorId(Long id) {
+        Pagamento pagamento = repository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
+
+        List<ItemDoPedidoDto> itensDoPedido = pedido.obtemItensDoPedido(id);
+
+        PagamentoDetalhadoDto pagamentoDetalhadoDto = modelmapper.map(pagamento, PagamentoDetalhadoDto.class);
+        pagamentoDetalhadoDto.setItens(itensDoPedido);
+
+        return pagamentoDetalhadoDto;
+    }
+
     public PagamentoDto obterPorId(Long id) {
         Pagamento pagamento = repository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
